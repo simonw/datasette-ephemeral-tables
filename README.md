@@ -15,7 +15,25 @@ Install this plugin in the same environment as Datasette.
 
 ## Usage
 
-Usage instructions go here.
+Once installed, this plugin will ensure Datasette starts running with a new named in-memory database called `ephemeral`.
+
+Any tables created in this database will be automatically dropped five minutes after creation.
+
+## Configuration
+
+All plugin settings are optional. The full set of settings in `metadata.yml` looks like this:
+
+```yaml
+plugins:
+    datasette-ephemeral-tables:
+        # The name of the in-memory database created by the plugin:
+        database: ephemeral
+        # After how many seconds should tables be dropped?
+        table_ttl: 300
+        # How often should the plugin check for expired tables (in seconds)?
+        check_interval: 2
+```
+The figures shown here are the default values.
 
 ## Development
 
