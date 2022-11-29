@@ -5,6 +5,7 @@ import time
 
 TABLE_TTL = 30
 
+
 async def check_for_new_tables(datasette, name):
     # This will be called every X seconds
     try:
@@ -19,7 +20,8 @@ async def check_for_new_tables(datasette, name):
             del db._known_tables[name]
         # Drop any tables that are older than TABLE_TTL seconds
         expired_tables = [
-            name for name, created in db._known_tables.items()
+            name
+            for name, created in db._known_tables.items()
             if time.monotonic() - created > TABLE_TTL
         ]
         for table in expired_tables:
@@ -46,6 +48,7 @@ def asgi_wrapper(datasette):
                     keep_checking(datasette, "demo")
                 )
             return await app(scope, receive, send)
+
         return ensure_task_running
 
     return wrapper

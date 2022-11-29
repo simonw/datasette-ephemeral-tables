@@ -13,16 +13,16 @@ def get_long_description():
 
 
 setup(
-    name="datasette-demo-database",
-    description="Configure in-memory demo databases for Datasette",
+    name="datasette-ephemeral-tables",
+    description="Provide tables that expire after a time limit",
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
     author="Simon Willison",
-    url="https://github.com/simonw/datasette-demo-database",
+    url="https://github.com/simonw/datasette-ephemeral-tables",
     project_urls={
-        "Issues": "https://github.com/simonw/datasette-demo-database/issues",
-        "CI": "https://github.com/simonw/datasette-demo-database/actions",
-        "Changelog": "https://github.com/simonw/datasette-demo-database/releases",
+        "Issues": "https://github.com/simonw/datasette-ephemeral-tables/issues",
+        "CI": "https://github.com/simonw/datasette-ephemeral-tables/actions",
+        "Changelog": "https://github.com/simonw/datasette-ephemeral-tables/releases",
     },
     license="Apache License, Version 2.0",
     classifiers=[
@@ -30,8 +30,8 @@ setup(
         "License :: OSI Approved :: Apache Software License",
     ],
     version=VERSION,
-    packages=["datasette_demo_database"],
-    entry_points={"datasette": ["demo_database = datasette_demo_database"]},
+    packages=["datasette_ephemeral_tables"],
+    entry_points={"datasette": ["ephemeral_tables = datasette_ephemeral_tables"]},
     install_requires=["datasette"],
     extras_require={"test": ["pytest", "pytest-asyncio"]},
     python_requires=">=3.7",

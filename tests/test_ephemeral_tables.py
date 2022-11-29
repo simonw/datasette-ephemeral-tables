@@ -8,4 +8,4 @@ async def test_plugin_is_installed():
     response = await datasette.client.get("/-/plugins.json")
     assert response.status_code == 200
     installed_plugins = {p["name"] for p in response.json()}
-    assert "datasette-demo-database" in installed_plugins
+    assert "datasette-ephemeral-tables" in installed_plugins
