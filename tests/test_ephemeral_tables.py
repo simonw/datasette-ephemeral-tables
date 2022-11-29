@@ -3,9 +3,18 @@ import pytest
 
 
 @pytest.mark.asyncio
-async def test_plugin_is_installed():
-    datasette = Datasette(memory=True)
-    response = await datasette.client.get("/-/plugins.json")
-    assert response.status_code == 200
-    installed_plugins = {p["name"] for p in response.json()}
-    assert "datasette-ephemeral-tables" in installed_plugins
+@pytest.mark.parametrize(
+    "name", ("custom", None)
+)
+async def test_database_created_on_startup(name):
+    config = {}
+    if name:
+        config["database_name"] = name
+    datasette = Datasette(memory=True, metadata={
+        "plugins": {
+            "datasette-ephemeral-tables": config
+        }
+    })
+    await datasette.invoke_startup()
+    expected = name or "ephemeral"
+    assert expected in datasette.databases
