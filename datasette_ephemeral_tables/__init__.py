@@ -31,7 +31,7 @@ window.addEventListener("load", function() {
     timeRemainingDiv.style.color = 'black';
     document.querySelector('.page-header').insertAdjacentElement('afterend', timeRemainingDiv);
 
-    // Every 1s, update the time remaining
+    // Update time remaining ~every second
     let interval = setInterval(() => {
         const now = new Date();
         const secondsRemaining = (ephemeralExpiresAt - now) / 1000;
@@ -42,7 +42,7 @@ window.addEventListener("load", function() {
             const timeRemaining = ephemeralFormatSecondsAsMinutesAndSeconds(secondsRemaining);
             timeRemainingDiv.innerText = `This table expires in ${timeRemaining}`;
         }
-    });
+    }, 800);
 });
 """
 
