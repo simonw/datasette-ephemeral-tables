@@ -21,7 +21,6 @@ def _settings(datasette):
 async def check_for_new_tables(datasette, name):
     # This will be called every X seconds
     table_ttl = _settings(datasette).table_ttl
-    print("Checking for new tables in", name)
     try:
         db = datasette.get_database(name)
         tables_names = await db.table_names()
@@ -38,7 +37,6 @@ async def check_for_new_tables(datasette, name):
             for name, created in db._known_tables.items()
             if time.monotonic() - created > table_ttl
         ]
-        print(" . Expired tables:", expired_tables)
         for table in expired_tables:
             await db.execute_write("DROP TABLE {}".format(table))
             del db._known_tables[table]
