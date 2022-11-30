@@ -4,7 +4,48 @@ import asyncio
 import collections
 import time
 
-TABLE_TTL = 30
+JAVASCRIPT = """
+let ephemeralExpiresAt = new Date();
+ephemeralExpiresAt.setSeconds(ephemeralExpiresAt.getSeconds() + %s);
+
+function ephemeralFormatSecondsAsMinutesAndSeconds(seconds) {
+    var minutes = Math.floor(seconds / 60);
+    if (minutes >= 10) {
+        return `${minutes}m`;
+    }
+    seconds = Math.ceil(seconds - minutes * 60);
+    if (minutes) {
+        return `${minutes}m ${seconds}s`;
+    } else {
+        return `${seconds}s`;
+    }
+}
+
+window.addEventListener("load", function() {
+    // Add div#ephemeral-timer
+    let timeRemainingDiv = document.createElement('div');
+    timeRemainingDiv.id = 'ephemeral-timer';
+    timeRemainingDiv.style.padding = '0.5em';
+    timeRemainingDiv.style.marginBottom = '0.75rem';
+    timeRemainingDiv.style.backgroundColor = 'pink';
+    timeRemainingDiv.style.color = 'black';
+    document.querySelector('.page-header').insertAdjacentElement('afterend', timeRemainingDiv);
+
+    // Every 1s, update the time remaining
+    let interval = setInterval(() => {
+        const now = new Date();
+        const secondsRemaining = (ephemeralExpiresAt - now) / 1000;
+        if (secondsRemaining <= 0) {
+            clearInterval(interval);
+            timeRemainingDiv.innerText = 'This table has expired';
+        } else {
+            const timeRemaining = ephemeralFormatSecondsAsMinutesAndSeconds(secondsRemaining);
+            timeRemainingDiv.innerText = `This table expires in ${timeRemaining}`;
+        }
+    });
+});
+"""
+
 
 Settings = collections.namedtuple("Settings", ("name", "table_ttl", "poll_interval"))
 
@@ -72,3 +113,15 @@ async def keep_checking(datasette, name, interval):
     while True:
         await check_for_new_tables(datasette, name)
         await asyncio.sleep(interval)
+
+
+@hookimpl
+def extra_body_script(database, table, view_name, datasette):
+    settings = _settings(datasette)
+    if view_name != "table" or database != settings.name:
+        return
+    table_created_at = datasette.get_database(database)._known_tables.get(table)
+    if table_created_at is None:
+        return
+    seconds_until_expires = settings.table_ttl - (time.monotonic() - table_created_at)
+    return JAVASCRIPT % str(seconds_until_expires)
