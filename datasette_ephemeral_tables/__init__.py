@@ -79,7 +79,7 @@ async def check_for_new_tables(datasette, name):
             if time.monotonic() - created > table_ttl
         ]
         for table in expired_tables:
-            await db.execute_write("DROP TABLE {}".format(table))
+            await db.execute_write("DROP TABLE [{}]".format(table))
             del db._known_tables[table]
     except Exception as e:
         print("Error in check_for_new_tables:", e)

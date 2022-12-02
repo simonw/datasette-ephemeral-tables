@@ -20,7 +20,8 @@ async def test_database_created_on_startup(name):
 
 
 @pytest.mark.asyncio
-async def test_table_dropped_after_ttl_seconds():
+@pytest.mark.parametrize("table", ("normal", "has_underscore-and-hyphen"))
+async def test_table_dropped_after_ttl_seconds(table):
     datasette = Datasette(
         memory=True,
         metadata={
@@ -37,15 +38,15 @@ async def test_table_dropped_after_ttl_seconds():
     await datasette.client.get("/ephemeral.json")
     # Now create a table
     db = datasette.get_database("ephemeral")
-    await db.execute_write("CREATE TABLE foo (id integer primary key)")
+    await db.execute_write("CREATE TABLE [{}] (id integer primary key)".format(table))
     tables = await db.table_names()
-    assert "foo" in tables
+    assert table in tables
     await asyncio.sleep(0.2)
     # Should be registered by now
-    assert "foo" in db._known_tables
+    assert table in db._known_tables
     await asyncio.sleep(0.4)
     # Should have been dropped
-    assert "foo" not in db._known_tables
+    assert table not in db._known_tables
     tables = await db.table_names()
     assert tables == []
 
