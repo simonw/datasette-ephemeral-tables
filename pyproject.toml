@@ -1,0 +1,30 @@
+[project]
+name = "datasette-ephemeral-tables"
+version = "0.2.2"
+description = "Provide tables that expire after a time limit"
+readme = "README.md"
+authors = [{name = "Simon Willison"}]
+license = "Apache-2.0"
+classifiers = [
+    "Framework :: Datasette"
+]
+requires-python = ">=3.10"
+dependencies = [
+    "datasette"
+]
+
+[project.urls]
+Homepage = "https://github.com/simonw/datasette-ephemeral-tables"
+Changelog = "https://github.com/simonw/datasette-ephemeral-tables/releases"
+Issues = "https://github.com/simonw/datasette-ephemeral-tables/issues"
+CI = "https://github.com/simonw/datasette-ephemeral-tables/actions"
+
+[project.optional-dependencies]
+test = ["pytest", "pytest-asyncio"]
+
+[project.entry-points.datasette]
+ephemeral_tables = "datasette_ephemeral_tables"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
