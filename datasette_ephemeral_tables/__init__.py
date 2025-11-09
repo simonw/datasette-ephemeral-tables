@@ -29,6 +29,17 @@ window.addEventListener("load", function() {
     timeRemainingDiv.style.marginBottom = '0.75rem';
     timeRemainingDiv.style.backgroundColor = 'pink';
     timeRemainingDiv.style.color = 'black';
+
+    // Set initial text content before adding to DOM
+    const now = new Date();
+    const secondsRemaining = (ephemeralExpiresAt - now) / 1000;
+    if (secondsRemaining <= 0) {
+        timeRemainingDiv.innerText = 'This table has expired';
+    } else {
+        const timeRemaining = ephemeralFormatSecondsAsMinutesAndSeconds(secondsRemaining);
+        timeRemainingDiv.innerText = `This table expires in ${timeRemaining}`;
+    }
+
     document.querySelector('.page-header').insertAdjacentElement('afterend', timeRemainingDiv);
 
     // Update time remaining ~every second
