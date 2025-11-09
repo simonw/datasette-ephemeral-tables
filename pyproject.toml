@@ -1,6 +1,6 @@
 [project]
 name = "datasette-ephemeral-tables"
-version = "0.2.2"
+version = "0.2.3"
 description = "Provide tables that expire after a time limit"
 readme = "README.md"
 authors = [{name = "Simon Willison"}]
